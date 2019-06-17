@@ -13,6 +13,7 @@ import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -20,7 +21,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TriviaViewModel extends AndroidViewModel {
-    private MutableLiveData<ArrayList<QuizQuestion>> mQuestions;
+    private MutableLiveData<ArrayList<TriviaQuestion>> mQuestions;
     private String TAG = "TriviaViewModel";
 
     public TriviaViewModel(@NonNull Application application) {
@@ -28,8 +29,13 @@ public class TriviaViewModel extends AndroidViewModel {
         mQuestions = new MutableLiveData<>();
     }
 
-    public LiveData<ArrayList<QuizQuestion>> getQuestions() {
+    public LiveData<ArrayList<TriviaQuestion>> getQuestions() {
         return mQuestions;
+
+    }
+
+    public void clearQuestions()   {
+        mQuestions = new MutableLiveData<>();
     }
 
     public void loadQuestions() {
@@ -42,29 +48,24 @@ public class TriviaViewModel extends AndroidViewModel {
                 .client(httpClient.build())
                 .build();
 
-        QuizService service = retrofit.create(QuizService.class);
-        Single<QuizResult> testObservable = service.getQuizResults(
+        TriviaService service = retrofit.create(TriviaService.class);
+        Single<TriviaResult> testObservable = service.getQuizResults(
                 5, 11,"easy", "multiple");
-
         testObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<QuizResult>() {
+                .subscribe(new SingleObserver<TriviaResult>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.i(TAG, "in onSubscribe");
-                    }
+                    public void onSubscribe(Disposable d)   {
 
+                    }
                     @Override
-                    public void onSuccess(QuizResult quizResult) {
-                        Log.i(TAG, "in onSuccess");
-                        Log.i(TAG, quizResult + "");
-                        mQuestions.postValue(quizResult.getQuestions());
+                    public void onSuccess(TriviaResult triviaResult) {
+                        mQuestions.postValue(triviaResult.getQuestions());
+
                     }
                     @Override
                     public void onError(Throwable e) {
-                        Log.i(TAG, "in onError: " + e);
                     }
                 });
     }
-
 }

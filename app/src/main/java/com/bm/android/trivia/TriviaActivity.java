@@ -11,7 +11,8 @@ import java.util.ArrayList;
 
 public class TriviaActivity extends AppCompatActivity implements
         SetupFragment.SetupFragmentCallback,
-        GameFragment.GameFragmentCallback
+        GameFragment.GameFragmentCallback,
+        SummaryFragment.SummaryFragmentCallback
 {
     private FragmentManager fm;
     private final int FRAGMENT_CONTAINER_ID = R.id.fragment_container;
@@ -48,17 +49,25 @@ public class TriviaActivity extends AppCompatActivity implements
                 .commit();
     }
 
+    /*SetupFragment Callbacks*/
     public void onStartGame()  {
         mTriviaViewModel.loadQuestions();
         replaceFragment(GameFragment.newInstance());
     }
 
-    public LiveData<ArrayList<QuizQuestion>> getQuizQuestions() {
+    /*GameFragment Callbacks*/
+    public LiveData<ArrayList<TriviaQuestion>> getTriviaQuestions() {
         return mTriviaViewModel.getQuestions();
     }
 
     public void onFinishGame()  {
+        replaceFragment(SummaryFragment.newInstance());
+    }
 
+    /*SummaryFragment Callbacks*/
+    public void onSetupNewGame()    {
+        mTriviaViewModel.clearQuestions();
+        replaceFragment(SetupFragment.newInstance());
     }
 }
 

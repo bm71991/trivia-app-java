@@ -4,9 +4,9 @@ import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface QuizService {
+public interface TriviaService {
     @GET("/api.php")
-    Single<QuizResult> getQuizResults(
+    Single<TriviaResult> getQuizResults(
             @Query("amount") int amount,
             @Query("category") int category,
             @Query("difficulty") String difficulty,

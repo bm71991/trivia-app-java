@@ -32,12 +32,7 @@ public class SetupFragment extends Fragment {
                              Bundle savedInstanceState)   {
         View view = inflater.inflate(R.layout.setup_fragment, container, false);
         submitButton = view.findViewById(R.id.submit_button);
-        submitButton.setOnClickListener(new View.OnClickListener()    {
-            @Override
-            public void onClick(View v) {
-                mCallback.onStartGame();
-            }
-        });
+        submitButton.setOnClickListener(v -> mCallback.onStartGame());
         return view;
     }
 

@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class QuizResult {
+public class TriviaResult {
     @SerializedName("results")
-    ArrayList<QuizQuestion> questions;
+    ArrayList<TriviaQuestion> questions;
 
-    ArrayList<QuizQuestion> getQuestions()   {
+    ArrayList<TriviaQuestion> getQuestions()   {
         return questions;
     }
 }
