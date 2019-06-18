@@ -27,19 +27,29 @@ public class GameViewModel extends AndroidViewModel {
     private String difficulty;
     private final int QUESTION_AMOUNT = 5;
     private final String QUESTION_TYPE = "multiple";
+    private int currentQuestionIndex;
 
     public GameViewModel(@NonNull Application application) {
         super(application);
         mQuestions = new MutableLiveData<>();
+        currentQuestionIndex = 0;
     }
 
     public LiveData<ArrayList<TriviaQuestion>> getQuestions() {
         return mQuestions;
-
     }
 
-    public void clearQuestions()   {
+    public void resetGame() {
+        currentQuestionIndex = 0;
         mQuestions = new MutableLiveData<>();
+    }
+
+    public int getCurrentQuestionIndex()    {
+        return currentQuestionIndex;
+    }
+
+    public void incrementCurrentQuestionIndex() {
+        currentQuestionIndex++;
     }
 
     public void setDifficulty(String difficulty)    {

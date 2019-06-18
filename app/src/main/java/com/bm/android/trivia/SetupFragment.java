@@ -69,8 +69,7 @@ public class SetupFragment extends Fragment {
                 difficultyButton.setText(chosenDifficulty));
 
         /* need to add validation here */
-        startButton.setOnClickListener(v ->
-                {
+        startButton.setOnClickListener(v -> {
                     GameViewModel gameViewModel = ViewModelProviders.of(getActivity())
                             .get(GameViewModel.class);
                     gameViewModel.setCategory((String) categoryButton.getText());

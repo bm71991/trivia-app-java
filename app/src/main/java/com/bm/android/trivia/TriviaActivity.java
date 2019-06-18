@@ -53,18 +53,12 @@ public class TriviaActivity extends AppCompatActivity implements
         replaceFragment(GameFragment.newInstance());
     }
 
-    /*GameFragment Callbacks*/
-//    public LiveData<ArrayList<TriviaQuestion>> getTriviaQuestions() {
-//        return mGameViewModel.getQuestions();
-//    }
-
     public void onFinishGame()  {
         replaceFragment(SummaryFragment.newInstance());
     }
 
     /*SummaryFragment Callbacks*/
     public void onSetupNewGame()    {
-        mGameViewModel.clearQuestions();
         replaceFragment(SetupFragment.newInstance());
     }
 }

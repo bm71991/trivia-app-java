@@ -6,20 +6,25 @@
 
     <TextView
         android:id="@+id/questionText"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="" />
     <ProgressBar
         android:id="@+id/progressBar"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
-    <Button
-        android:id="@+id/to_summary_button"
-        android:layout_height="wrap_content"
+    <RadioGroup
         android:layout_width="wrap_content"
-        android:text="to summary"
-        android:visibility="invisible"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/questions_radio_group"
+        android:visibility="gone"/>
+    <Button
+        android:id="@+id/submit_answer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_answer"
+        android:visibility="gone"/>
 </LinearLayout>
