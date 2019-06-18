@@ -61,7 +61,6 @@ public class TriviaViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(TriviaResult triviaResult) {
                         mQuestions.postValue(triviaResult.getQuestions());
-
                     }
                     @Override
                     public void onError(Throwable e) {
