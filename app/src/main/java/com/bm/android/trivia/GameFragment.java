@@ -2,6 +2,7 @@ package com.bm.android.trivia;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,16 +25,19 @@ public class GameFragment extends Fragment {
     private GameFragmentCallback mCallback;
     private Button mToSummaryButton;
     private String TAG = "GameFragment";
-    LiveData<ArrayList<TriviaQuestion>> mQuestions;
+    private LiveData<ArrayList<TriviaQuestion>> mQuestions;
+    private GameViewModel mGameViewModel;
 
     /*Hosting activity must implement - see onAttach*/
     public interface GameFragmentCallback {
         void onFinishGame();
-        LiveData<ArrayList<TriviaQuestion>> getTriviaQuestions();
+//        LiveData<ArrayList<TriviaQuestion>> getTriviaQuestions();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        mGameViewModel = ViewModelProviders.of(getActivity()).get(GameViewModel.class);
+        mGameViewModel.loadQuestions();
         super.onCreate(savedInstanceState);
     }
 
@@ -61,7 +65,7 @@ public class GameFragment extends Fragment {
         mProgressBar = view.findViewById(R.id.progressBar);
         mToSummaryButton = view.findViewById(R.id.to_summary_button);
         mQuestionTextView = view.findViewById(R.id.questionText);
-        mQuestions = mCallback.getTriviaQuestions();
+        mQuestions = mGameViewModel.getQuestions();
 
         /*If the questions have not been loaded in the ViewModel yet: */
         if (mQuestions.getValue() == null)  {

@@ -20,11 +20,15 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TriviaViewModel extends AndroidViewModel {
+public class GameViewModel extends AndroidViewModel {
     private MutableLiveData<ArrayList<TriviaQuestion>> mQuestions;
-    private String TAG = "TriviaViewModel";
+    private String TAG = "GameViewModel";
+    private int category;
+    private String difficulty;
+    private final int QUESTION_AMOUNT = 5;
+    private final String QUESTION_TYPE = "multiple";
 
-    public TriviaViewModel(@NonNull Application application) {
+    public GameViewModel(@NonNull Application application) {
         super(application);
         mQuestions = new MutableLiveData<>();
     }
@@ -38,6 +42,31 @@ public class TriviaViewModel extends AndroidViewModel {
         mQuestions = new MutableLiveData<>();
     }
 
+    public void setDifficulty(String difficulty)    {
+        this.difficulty = difficulty;
+    }
+
+    public void setCategory(String categoryName)    {
+        category = mapCategoryNameToInt(categoryName);
+    }
+
+    private int mapCategoryNameToInt(String categoryName)   {
+        switch (categoryName)   {
+            case "Books":
+                Log.i("test", "BOOKS");
+                return 10;
+            case "Film":
+                return 11;
+            case "Music":
+                return 12;
+            case "TV":
+                return 14;
+            default:
+                /* -1 means some sort of error occured */
+                return -1;
+        }
+    }
+
     public void loadQuestions() {
         String url = "https://opentdb.com/";
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
@@ -49,9 +78,10 @@ public class TriviaViewModel extends AndroidViewModel {
                 .build();
 
         TriviaService service = retrofit.create(TriviaService.class);
-        Single<TriviaResult> testObservable = service.getQuizResults(
-                5, 11,"easy", "multiple");
-        testObservable.subscribeOn(Schedulers.io())
+        Single<TriviaResult> apiObservable = service.getQuizResults(
+                QUESTION_AMOUNT, category, difficulty, QUESTION_TYPE);
+
+        apiObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<TriviaResult>() {
                     @Override
