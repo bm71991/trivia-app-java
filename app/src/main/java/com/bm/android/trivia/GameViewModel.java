@@ -20,36 +20,50 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/*Used by GameFragment and for communication between SetupFragment and GameFragment */
 public class GameViewModel extends AndroidViewModel {
     private MutableLiveData<ArrayList<TriviaQuestion>> mQuestions;
     private String TAG = "GameViewModel";
     private int category;
+    private int correctAnswerCount;
+    private MutableLiveData<Integer> currentQuestionIndex;
     private String difficulty;
     private final int QUESTION_AMOUNT = 5;
     private final String QUESTION_TYPE = "multiple";
-    private int currentQuestionIndex;
 
     public GameViewModel(@NonNull Application application) {
         super(application);
         mQuestions = new MutableLiveData<>();
-        currentQuestionIndex = 0;
+        currentQuestionIndex = new MutableLiveData<>();
+        currentQuestionIndex.setValue(0);
+        correctAnswerCount = 0;
     }
 
-    public LiveData<ArrayList<TriviaQuestion>> getQuestions() {
+    public void incrementCorrectAnswerCount()   {
+        correctAnswerCount++;
+    }
+
+    public int getCorrectAnswerCount()  {
+        return correctAnswerCount;
+    }
+
+    public LiveData<ArrayList<TriviaQuestion>> getQuestionsLiveData() {
         return mQuestions;
     }
 
     public void resetGame() {
-        currentQuestionIndex = 0;
         mQuestions = new MutableLiveData<>();
+        currentQuestionIndex.setValue(0);
+        correctAnswerCount = 0;
     }
 
-    public int getCurrentQuestionIndex()    {
+    public LiveData<Integer> getCurrentQuestionIndex()    {
         return currentQuestionIndex;
     }
 
     public void incrementCurrentQuestionIndex() {
-        currentQuestionIndex++;
+        int newValue = currentQuestionIndex.getValue() + 1;
+        currentQuestionIndex.setValue(newValue);
     }
 
     public void setDifficulty(String difficulty)    {
@@ -60,10 +74,10 @@ public class GameViewModel extends AndroidViewModel {
         category = mapCategoryNameToInt(categoryName);
     }
 
+    /*mapping of category names to numbers which are used in the trivia API call */
     private int mapCategoryNameToInt(String categoryName)   {
         switch (categoryName)   {
             case "Books":
-                Log.i("test", "BOOKS");
                 return 10;
             case "Film":
                 return 11;
