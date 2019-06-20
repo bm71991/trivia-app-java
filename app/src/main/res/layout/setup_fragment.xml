@@ -6,25 +6,30 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/select_category"/>
+        android:text="@string/select_category"
+        android:layout_gravity="center"/>
     <Button
         android:id="@+id/category_button"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/no_category_selected">
+        android:text="@string/no_category_selected"
+        android:layout_gravity="center">
     </Button>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/select_difficulty"/>
+        android:text="@string/select_difficulty"
+        android:layout_gravity="center"/>
     <Button
         android:id="@+id/difficulty_button"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/no_difficulty_selected"/>
+        android:text="@string/no_difficulty_selected"
+        android:layout_gravity="center"/>
     <Button
         android:id="@+id/start_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start_button_text"/>
+        android:text="@string/start_button_text"
+        android:layout_gravity="center"/>
 </LinearLayout>

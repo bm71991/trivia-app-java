@@ -18,7 +18,8 @@ public class SummaryViewModel extends AndroidViewModel {
         finalScore = correctAnswerCount / numberOfQuestions;
     }
 
-    public double getFinalScore()   {
-        return finalScore;
+    public String getFinalScore()   {
+        int percentageNumber = (int) Math.round(finalScore * 100);
+        return percentageNumber + "%";
     }
 }

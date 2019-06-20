@@ -9,6 +9,8 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="15dp"
+        android:layout_gravity="center"
         android:text="" />
     <ProgressBar
         android:id="@+id/progressBar"
@@ -20,11 +22,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/questions_radio_group"
-        android:visibility="gone"/>
+        android:paddingBottom="15dp"
+        android:visibility="gone" />
     <Button
         android:id="@+id/submit_answer_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/submit_answer"
+        android:layout_gravity="center"
         android:visibility="gone"/>
 </LinearLayout>

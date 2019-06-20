@@ -6,4 +6,6 @@
     <string name="select_difficulty">Select difficulty:</string>
     <string name="start_button_text">Start Game</string>
     <string name="submit_answer">Submit Answer</string>
+    <string name="score_title">Game Score:</string>
+    <string name="restart_game">Play Again</string>
 </resources>
