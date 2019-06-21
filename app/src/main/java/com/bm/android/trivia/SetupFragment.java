@@ -36,14 +36,14 @@ public class SetupFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        /* same instance of SetupViewModel used between SetupFragment and PickerFragment */
+        mSetupViewModel = ViewModelProviders.of(getActivity()).get(SetupViewModel.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)   {
-        /* same instance of SetupViewModel used between SetupFragment and PickerFragment */
-        mSetupViewModel = ViewModelProviders.of(getActivity()).get(SetupViewModel.class);
+
         View view = inflater.inflate(R.layout.setup_fragment, container, false);
         categoryButton = view.findViewById(R.id.category_button);
         difficultyButton = view.findViewById(R.id.difficulty_button);
@@ -58,12 +58,9 @@ public class SetupFragment extends Fragment {
 
         /* observe when PickerFragment changes these fields in SetupViewModel:
          * update UI accordingly. */
-        categoryChosen.observe(this, chosenCategory ->
-                {
-                    Log.i("test", "change");
+        categoryChosen.observe(this, chosenCategory -> {
                     categoryButton.setText(chosenCategory);
-                }
-        );
+                });
 
         difficultyChosen.observe(this, chosenDifficulty ->
                 difficultyButton.setText(chosenDifficulty));
@@ -77,12 +74,6 @@ public class SetupFragment extends Fragment {
                     mCallback.onStartGame();
                 });
         return view;
-    }
-
-    @Override
-    public void onResume()  {
-        super.onResume();
-
     }
 
     @Override

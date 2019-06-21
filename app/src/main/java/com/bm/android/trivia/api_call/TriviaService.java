@@ -1,4 +1,4 @@
-package com.bm.android.trivia;
+package com.bm.android.trivia.api_call;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;

@@ -21,11 +21,9 @@ public class PickerFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         setupViewModel = ViewModelProviders.of(getActivity()).get(SetupViewModel.class);
-
         pickerType = setupViewModel.getDialogType();
         String title = getTitle(pickerType);
         options = getOptions(pickerType);
-
 
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.options_picker, null);
         optionsPicker = v.findViewById(R.id.options_picker);
@@ -34,18 +32,15 @@ public class PickerFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
                 .setTitle(title)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        /* Index of the chosen value in the list of options for optionsPicker */
-                        int optionsIndex = optionsPicker.getValue();
-                        if (pickerType.equals(CATEGORY_TAG))    {
-                            String optionChosen = setupViewModel.getCategoryString(optionsIndex);
-                            setupViewModel.setCategory(optionChosen);
-                        } else {
-                            String optionChosen = setupViewModel.getDifficultyString(optionsIndex);
-                            setupViewModel.setDifficulty(optionChosen);
-                        }
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    /* Index of the chosen value in the list of options for optionsPicker */
+                    int optionsIndex = optionsPicker.getValue();
+                    if (pickerType.equals(CATEGORY_TAG))    {
+                        String optionChosen = setupViewModel.getCategoryString(optionsIndex);
+                        setupViewModel.setCategory(optionChosen);
+                    } else {
+                        String optionChosen = setupViewModel.getDifficultyString(optionsIndex);
+                        setupViewModel.setDifficulty(optionChosen);
                     }
                 })
                 .create();

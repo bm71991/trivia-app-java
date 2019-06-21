@@ -5,7 +5,9 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
-import android.util.Log;
+
+import com.bm.android.trivia.api_call.TriviaQuestion;
+import com.bm.android.trivia.api_call.TriviaResult;
 
 import java.util.ArrayList;
 
@@ -13,23 +15,16 @@ import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /*Used by GameFragment and for communication between SetupFragment and GameFragment */
 public class GameViewModel extends AndroidViewModel {
     private MutableLiveData<ArrayList<TriviaQuestion>> mQuestions;
-    private String TAG = "GameViewModel";
-    private int category;
+    private String category;
     private int correctAnswerCount;
     private MutableLiveData<Integer> currentQuestionIndex;
     private String difficulty;
-    private final int QUESTION_AMOUNT = 5;
-    private final String QUESTION_TYPE = "multiple";
+    private WebServiceRepository mWebServiceRepository;
 
     public GameViewModel(@NonNull Application application) {
         super(application);
@@ -37,6 +32,7 @@ public class GameViewModel extends AndroidViewModel {
         currentQuestionIndex = new MutableLiveData<>();
         currentQuestionIndex.setValue(0);
         correctAnswerCount = 0;
+        mWebServiceRepository = new WebServiceRepository();
     }
 
     public void incrementCorrectAnswerCount()   {
@@ -71,39 +67,12 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public void setCategory(String categoryName)    {
-        category = mapCategoryNameToInt(categoryName);
-    }
-
-    /*mapping of category names to numbers which are used in the trivia API call */
-    private int mapCategoryNameToInt(String categoryName)   {
-        switch (categoryName)   {
-            case "Books":
-                return 10;
-            case "Film":
-                return 11;
-            case "Music":
-                return 12;
-            case "TV":
-                return 14;
-            default:
-                /* -1 means some sort of error occured */
-                return -1;
-        }
+        category = categoryName;
     }
 
     public void loadQuestions() {
-        String url = "https://opentdb.com/";
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(httpClient.build())
-                .build();
-
-        TriviaService service = retrofit.create(TriviaService.class);
-        Single<TriviaResult> apiObservable = service.getQuizResults(
-                QUESTION_AMOUNT, category, difficulty, QUESTION_TYPE);
+       Single<TriviaResult> apiObservable =
+               mWebServiceRepository.getTriviaResult(category, difficulty);
 
         apiObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

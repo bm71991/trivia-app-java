@@ -1,15 +1,10 @@
-package com.bm.android.trivia;
-
-import android.util.Log;
+package com.bm.android.trivia.api_call;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class TriviaQuestion {
-    private String difficulty;
     private String question;
     @SerializedName("correct_answer")
     private String correctAnswer;
@@ -17,11 +12,11 @@ public class TriviaQuestion {
     private ArrayList<String> incorrectAnswers;
     private int correctAnswerIndex;
 
-    String getCorrectAnswer()   {
+    public String getCorrectAnswer()   {
         return correctAnswer;
     }
 
-    String getQuestion()    {
+    public String getQuestion()    {
         return question;
     }
 

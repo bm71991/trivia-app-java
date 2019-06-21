@@ -66,6 +66,7 @@ public class SetupViewModel extends AndroidViewModel {
     public void setDialogType(String type)  {
         dialogType = type;
     }
+
     public void clearDialogType()   {
         dialogType = "";
     }

@@ -12,8 +12,7 @@ import java.util.ArrayList;
 public class TriviaActivity extends AppCompatActivity implements
         SetupFragment.SetupFragmentCallback,
         GameFragment.GameFragmentCallback,
-        SummaryFragment.SummaryFragmentCallback
-{
+        SummaryFragment.SummaryFragmentCallback {
     private FragmentManager fm;
     private final int FRAGMENT_CONTAINER_ID = R.id.fragment_container;
     private GameViewModel mGameViewModel;
@@ -26,7 +25,6 @@ public class TriviaActivity extends AppCompatActivity implements
 
         if (savedInstanceState != null) {
         }
-
         // UI of Fragment already inflated in Fragment - returns null if
         //activity is just instantiated.
         Fragment fragment = fm.findFragmentById(FRAGMENT_CONTAINER_ID);

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.bm.android.trivia.api_call.TriviaQuestion;
+
 import java.util.ArrayList;
 
 public class GameFragment extends Fragment {
@@ -24,7 +25,6 @@ public class GameFragment extends Fragment {
     private GameFragmentCallback mCallback;
     private Button mSubmitAnswerButton;
     private RadioGroup mRadioGroup;
-    private String TAG = "GameFragment";
     private LiveData<ArrayList<TriviaQuestion>> mQuestionsLiveData;
     private GameViewModel mGameViewModel;
     private SummaryViewModel mSummaryViewModel;
