@@ -8,4 +8,14 @@
     <string name="submit_answer">Submit Answer</string>
     <string name="score_title">Game Score:</string>
     <string name="restart_game">Play Again</string>
+    <string name="welcome_text">Trivia Game</string>
+    <string name="signup">sign up</string>
+    <string name="signup_title">Sign up for an Account</string>
+    <string name="signup_success_text">
+        Signup was a success. Please check your email to finalize your account."
+    </string>
+    <string name="email_title">Email</string>
+    <string name="password_title">Password</string>
+    <string name="log_in">log in</string>
+    <string name="back_to_main">Back to Main Page</string>
 </resources>

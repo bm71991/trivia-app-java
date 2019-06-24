@@ -1,4 +1,4 @@
-package com.bm.android.trivia;
+package com.bm.android.trivia.game;
 
 import com.bm.android.trivia.api_call.ApiClient;
 import com.bm.android.trivia.api_call.TriviaResult;

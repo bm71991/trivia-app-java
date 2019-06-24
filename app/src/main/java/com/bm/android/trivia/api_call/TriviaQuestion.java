@@ -11,6 +11,7 @@ public class TriviaQuestion {
     @SerializedName("incorrect_answers")
     private ArrayList<String> incorrectAnswers;
     private int correctAnswerIndex;
+    private ArrayList<String> allAnswers;
 
     public String getCorrectAnswer()   {
         return correctAnswer;
@@ -21,13 +22,16 @@ public class TriviaQuestion {
     }
 
     public ArrayList<String> getAnswers()   {
-        int answerCount = incorrectAnswers.size() + 1;
-        Random random = new Random();
-        /* Choose a random position for the correct answer to be at in the list */
-        correctAnswerIndex = random.nextInt(answerCount);
-        ArrayList<String> answersToDisplay = new ArrayList<String>();
-        answersToDisplay.addAll(incorrectAnswers);
-        answersToDisplay.add(correctAnswerIndex, correctAnswer);
-        return answersToDisplay;
+        if (allAnswers == null)    {
+            int answerCount = incorrectAnswers.size() + 1;
+            Random random = new Random();
+            /* Choose a random position for the correct answer to be at in the list */
+            correctAnswerIndex = random.nextInt(answerCount);
+            ArrayList<String> answersToDisplay = new ArrayList<>();
+            answersToDisplay.addAll(incorrectAnswers);
+            answersToDisplay.add(correctAnswerIndex, correctAnswer);
+            allAnswers = answersToDisplay;
+        }
+        return allAnswers;
     }
 }

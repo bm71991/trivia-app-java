@@ -1,10 +1,10 @@
-package com.bm.android.trivia;
+package com.bm.android.trivia.game;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.annotation.NonNull;
 
 import com.bm.android.trivia.api_call.TriviaQuestion;
 import com.bm.android.trivia.api_call.TriviaResult;
@@ -25,6 +25,7 @@ public class GameViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> currentQuestionIndex;
     private String difficulty;
     private WebServiceRepository mWebServiceRepository;
+    private boolean hasCalledLoadQuestions;
 
     public GameViewModel(@NonNull Application application) {
         super(application);
@@ -32,7 +33,16 @@ public class GameViewModel extends AndroidViewModel {
         currentQuestionIndex = new MutableLiveData<>();
         currentQuestionIndex.setValue(0);
         correctAnswerCount = 0;
+        hasCalledLoadQuestions = false;
         mWebServiceRepository = new WebServiceRepository();
+    }
+
+    public boolean hasCalledLoadQuestions() {
+        return hasCalledLoadQuestions;
+    }
+
+    public void loadQuestionsHasBeenCalled() {
+        hasCalledLoadQuestions = true;
     }
 
     public void incrementCorrectAnswerCount()   {
@@ -51,6 +61,7 @@ public class GameViewModel extends AndroidViewModel {
         mQuestions = new MutableLiveData<>();
         currentQuestionIndex.setValue(0);
         correctAnswerCount = 0;
+        hasCalledLoadQuestions = false;
     }
 
     public LiveData<Integer> getCurrentQuestionIndex()    {

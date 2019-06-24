@@ -1,8 +1,8 @@
-package com.bm.android.trivia;
+package com.bm.android.trivia.game;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 /*used by SummaryFragment and for communication between GameFragment and SummaryFragment*/

@@ -1,15 +1,17 @@
-package com.bm.android.trivia;
+package com.bm.android.trivia.game;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.util.Log;
+import androidx.fragment.app.DialogFragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
+
+import com.bm.android.trivia.R;
 
 public class PickerFragment extends DialogFragment {
     private final static String CATEGORY_TAG = "category";

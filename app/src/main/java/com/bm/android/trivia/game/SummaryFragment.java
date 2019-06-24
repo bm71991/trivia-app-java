@@ -1,15 +1,16 @@
-package com.bm.android.trivia;
+package com.bm.android.trivia.game;
 
-import android.app.Application;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.bm.android.trivia.R;
 
 public class SummaryFragment extends Fragment {
     private SummaryFragmentCallback mCallback;

@@ -1,10 +1,10 @@
-package com.bm.android.trivia;
+package com.bm.android.trivia.game;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.annotation.NonNull;
 
 /*Primarily used for communication between SetupFragment and PickerFragment*/
 public class SetupViewModel extends AndroidViewModel {

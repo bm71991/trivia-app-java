@@ -1,10 +1,10 @@
-package com.bm.android.trivia;
+package com.bm.android.trivia.game;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.bm.android.trivia.R;
 import com.bm.android.trivia.api_call.TriviaQuestion;
 
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ public class GameFragment extends Fragment {
         mGameViewModel = ViewModelProviders.of(getActivity()).get(GameViewModel.class);
         mSummaryViewModel = ViewModelProviders.of(getActivity())
                 .get(SummaryViewModel.class);
-        mGameViewModel.loadQuestions();
         mCurrentQuestionIndex = mGameViewModel.getCurrentQuestionIndex();
         super.onCreate(savedInstanceState);
     }
@@ -72,6 +72,10 @@ public class GameFragment extends Fragment {
 
         mQuestionsLiveData = mGameViewModel.getQuestionsLiveData();
 
+        if (!mGameViewModel.hasCalledLoadQuestions())   {
+            mGameViewModel.loadQuestions();
+            mGameViewModel.loadQuestionsHasBeenCalled();
+        }
         /*If the questions have not been loaded in the ViewModel yet: */
         if (mQuestionsLiveData.getValue() == null)  {
             mProgressBar.setVisibility(ProgressBar.VISIBLE);
