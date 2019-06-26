@@ -63,7 +63,13 @@ public class SignupFragment extends Fragment {
 
                         if (task.isSuccessful())    {
                             mAuth.getCurrentUser().sendEmailVerification()
-                                    .addOnCompleteListener(task1 -> mCallback.onSignupSuccess());
+                                    .addOnCompleteListener(task1 -> {
+                                        /*must explicitly sign out or else
+                                          mAuth.getCurrentUser() != null
+                                         */
+                                        mAuth.signOut();
+                                        mCallback.onSignupSuccess();
+                                    });
                         } else {
                             Toast.makeText(getContext(), task.getException().getMessage(),
                                     Toast.LENGTH_LONG).show();

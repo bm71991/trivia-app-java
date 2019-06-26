@@ -16,6 +16,11 @@
     </string>
     <string name="email_title">Email</string>
     <string name="password_title">Password</string>
+    <string name="login_title">Login</string>
     <string name="log_in">log in</string>
     <string name="back_to_main">Back to Main Page</string>
+    <string name="unverified_email">Check your email to verify your account.</string>
+    <string name="login_success">You are successfully logged in.</string>
+    <string name="start_game_btn">Start game</string>
+    <string name="log_out_btn">Log out</string>
 </resources>
