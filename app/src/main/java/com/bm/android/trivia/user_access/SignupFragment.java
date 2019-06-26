@@ -11,8 +11,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bm.android.trivia.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 public class SignupFragment extends Fragment {
@@ -20,6 +25,7 @@ public class SignupFragment extends Fragment {
     private ProgressBar mProgressBar;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
+    private EditText mUsernameEditText;
     private Button mSignupButton;
     private SignupFragmentCallback mCallback;
 
@@ -50,11 +56,14 @@ public class SignupFragment extends Fragment {
         mProgressBar = view.findViewById(R.id.auth_progress_bar);
         mEmailEditText = view.findViewById(R.id.email_input);
         mPasswordEditText = view.findViewById(R.id.password_input);
+        mUsernameEditText = view.findViewById(R.id.username);
         mSignupButton = view.findViewById(R.id.signup_button);
 
         mSignupButton.setOnClickListener(v -> {
             String email = mEmailEditText.getText().toString();
             String password = mPasswordEditText.getText().toString();
+            String username = mUsernameEditText.getText().toString();
+
             mProgressBar.setVisibility(ProgressBar.VISIBLE);
 
             mAuth.createUserWithEmailAndPassword(email, password)
@@ -64,11 +73,7 @@ public class SignupFragment extends Fragment {
                         if (task.isSuccessful())    {
                             mAuth.getCurrentUser().sendEmailVerification()
                                     .addOnCompleteListener(task1 -> {
-                                        /*must explicitly sign out or else
-                                          mAuth.getCurrentUser() != null
-                                         */
-                                        mAuth.signOut();
-                                        mCallback.onSignupSuccess();
+                                        setUserName(username);
                                     });
                         } else {
                             Toast.makeText(getContext(), task.getException().getMessage(),
@@ -78,6 +83,22 @@ public class SignupFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void setUserName(String username)  {
+        UserProfileChangeRequest usernameUpdate = new UserProfileChangeRequest.Builder()
+                .setDisplayName(username).build();
+            mAuth.getCurrentUser().updateProfile(usernameUpdate)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                /*must explicitly sign out or else
+                  mAuth.getCurrentUser() != null
+                */
+                mAuth.signOut();
+                mCallback.onSignupSuccess();
+            }
+        });
     }
 
     @Override
