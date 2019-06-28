@@ -1,4 +1,4 @@
-package com.bm.android.trivia.game;
+package com.bm.android.trivia.game.viewmodels;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
@@ -33,24 +33,24 @@ public class SummaryViewModel extends AndroidViewModel {
 
 
     /*************************TEST*/
-//    FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-//
-//    FirebaseFirestore db = FirebaseFirestore.getInstance();
-//    Map<String, Object> user = new HashMap<>();
-//        user.put("email", fbUser.getEmail());
-//                user.put("easy", 0);
-//                DocumentReference docRef = db.collection("perfectScoreCount/books/userScores").document(fbUser.getEmail());
-//                docRef.set(user);
-//                db.collection("perfectScoreCount/books/userScores").orderBy("easy", Query.Direction.DESCENDING)
+
+//                        FirebaseFirestore.getInstance().collection("perfectScoreCount")
 //                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 //@Override
 //public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 //        ArrayList<User> test = new ArrayList<>();
-//        for (DocumentSnapshot q : queryDocumentSnapshots)
-//        test.add(q.toObject(User.class));
+//        for (DocumentSnapshot q : queryDocumentSnapshots)   {
+//            Log.i("test", "id: " + q.getId());
+//            User user = q.toObject(User.class);
+//            user.setId(q.getId());
+//            test.add(user);
+//        }
 //
-//        Log.i("test", "email: " + test.get(0).getEmail() +
-//        ", easy perfect scores = " +test.get(0).getEasy());
+//
+//
+//
+//        Log.i("test", "id: " + test.get(0).getId());
+//    Log.i("test", "id: " + test.get(0).getEasy());
 //        }
 //
 //        });

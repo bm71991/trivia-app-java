@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.bm.android.trivia.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.bm.android.trivia.game.viewmodels.GameViewModel;
+import com.bm.android.trivia.game.viewmodels.SetupViewModel;
 
 public class SetupFragment extends Fragment {
     private SetupFragmentCallback mCallback;
@@ -40,30 +40,19 @@ public class SetupFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /* same instance of SetupViewModel used between SetupFragment and PickerFragment */
+        /* same instance of SetupViewModel used between SetupFragment and SetupPickerFragment */
         mSetupViewModel = ViewModelProviders.of(getActivity()).get(SetupViewModel.class);
+        Log.i("test", "view model in setupfragment = " + mSetupViewModel);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)   {
-
-
-//        delete
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user != null)   {
-//            Log.i("test", "user = " +  user.getEmail() + " in SetupFragment");
-//        } else  {
-//            Log.i("test", "user = " +  user + " in SetupFragment");
-//        }
-//        delete
-
-
         View view = inflater.inflate(R.layout.setup_fragment, container, false);
         categoryButton = view.findViewById(R.id.category_button);
         difficultyButton = view.findViewById(R.id.difficulty_button);
 
-        /* Set listeners to start PickerFragment if button is selected */
+        /* Set listeners to start SetupPickerFragment if button is selected */
         categoryButton.setOnClickListener(v -> startPickerDialog(CATEGORY_TAG));
         difficultyButton.setOnClickListener(v -> startPickerDialog(DIFFICULTY_TAG));
         startButton = view.findViewById(R.id.start_button);
@@ -71,7 +60,7 @@ public class SetupFragment extends Fragment {
         LiveData<String> categoryChosen = mSetupViewModel.getCategoryChosen();
         LiveData<String> difficultyChosen = mSetupViewModel.getDifficultyChosen();
 
-        /* observe when PickerFragment changes these fields in SetupViewModel:
+        /* observe when SetupPickerFragment changes these fields in SetupViewModel:
          * update UI accordingly. */
         categoryChosen.observe(this, chosenCategory -> {
                     categoryButton.setText(chosenCategory);
@@ -107,7 +96,7 @@ public class SetupFragment extends Fragment {
 
     private void startPickerDialog(String dialogType)    {
         FragmentManager fm = getFragmentManager();
-        PickerFragment pickerDialog = PickerFragment.newInstance();
+        SetupPickerFragment pickerDialog = SetupPickerFragment.newInstance();
         mSetupViewModel.setDialogType(dialogType);
         pickerDialog.show(fm, PICKER_DIALOG_TAG);
     }

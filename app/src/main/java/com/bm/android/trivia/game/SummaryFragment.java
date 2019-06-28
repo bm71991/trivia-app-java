@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bm.android.trivia.R;
+import com.bm.android.trivia.game.viewmodels.SummaryViewModel;
 
 public class SummaryFragment extends Fragment {
     private SummaryFragmentCallback mCallback;
@@ -61,6 +62,4 @@ public class SummaryFragment extends Fragment {
     public static SummaryFragment newInstance()   {
         return new SummaryFragment();
     }
-
-
 }

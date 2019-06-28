@@ -13,8 +13,9 @@ import android.view.View;
 import android.widget.NumberPicker;
 
 import com.bm.android.trivia.R;
+import com.bm.android.trivia.game.viewmodels.SetupViewModel;
 
-public class PickerFragment extends DialogFragment {
+public class SetupPickerFragment extends DialogFragment {
     private final static String CATEGORY_TAG = "category";
     private String[] options;
     private SetupViewModel setupViewModel;
@@ -50,8 +51,8 @@ public class PickerFragment extends DialogFragment {
                 .create();
     }
 
-    public static PickerFragment newInstance() {
-        PickerFragment fragment = new PickerFragment();
+    public static SetupPickerFragment newInstance() {
+        SetupPickerFragment fragment = new SetupPickerFragment();
         return fragment;
     }
 

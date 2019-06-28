@@ -28,4 +28,9 @@
     <string name="trivia_game">Trivia Game</string>
     <string name="welcome">Welcome</string>
     <string name="actionbar_login_success">Login Success</string>
+    <string name="top_players">Get Top Players</string>
+    <string name="get_best_btn">Go</string>
+    <string name="get_best_text">
+        Search for the top 3 users with the highest number of perfect
+    scores for a given category and difficulty.</string>
 </resources>

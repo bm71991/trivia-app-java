@@ -2,4 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_log_out"
         android:title="@string/log_out_btn"/>
+    <item android:id="@+id/menu_top_players"
+        android:title="@string/top_players"/>
 </menu>

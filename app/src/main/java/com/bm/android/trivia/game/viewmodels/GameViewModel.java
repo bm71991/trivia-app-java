@@ -1,4 +1,4 @@
-package com.bm.android.trivia.game;
+package com.bm.android.trivia.game.viewmodels;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.bm.android.trivia.api_call.TriviaQuestion;
 import com.bm.android.trivia.api_call.TriviaResult;
+import com.bm.android.trivia.game.WebServiceRepository;
 
 import java.util.ArrayList;
 

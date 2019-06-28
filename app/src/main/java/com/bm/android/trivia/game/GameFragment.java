@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.bm.android.trivia.R;
 import com.bm.android.trivia.api_call.TriviaQuestion;
+import com.bm.android.trivia.game.viewmodels.GameViewModel;
+import com.bm.android.trivia.game.viewmodels.SummaryViewModel;
 
 import java.util.ArrayList;
 

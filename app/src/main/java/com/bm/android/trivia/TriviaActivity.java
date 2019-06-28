@@ -5,6 +5,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.bm.android.trivia.game.BestPlayersFragment;
 import com.bm.android.trivia.game.GameFragment;
 import com.bm.android.trivia.game.SetupFragment;
 import com.bm.android.trivia.game.SummaryFragment;
@@ -46,6 +47,13 @@ public class TriviaActivity extends AppCompatActivity implements
                 .commit();
     }
 
+    private void addPreviousToBackStack(Fragment fragment) {
+        fm.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,26 +83,27 @@ public class TriviaActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu)    {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.trivia_menu, menu);
-        MenuItem logoutItem = menu.findItem(R.id.menu_log_out);
 
-        if (mAuth.getCurrentUser() == null) {
-            logoutItem.setVisible(false);
-        } else {
-            logoutItem.setVisible(true);
+        if (mAuth.getCurrentUser() != null) {
+            inflater.inflate(R.menu.trivia_menu, menu);
         }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case (R.id.menu_log_out):
                 onLogoutUser();
+            break;
+            case (R.id.menu_top_players):
+                onSelectTopThreeItem();
+            break;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return true;
     }
 
     /* Game callbacks */
@@ -112,14 +121,6 @@ public class TriviaActivity extends AppCompatActivity implements
     public void onSetupNewGame()    {
         replaceFragment(SetupFragment.newInstance());
         setPlayerNameInActionbar();
-        invalidateOptionsMenu();
-    }
-
-    /* Used in this Activity and in LoginSuccessFragment */
-    public void onLogoutUser()    {
-        mAuth.signOut();
-        toWelcomeFragment();
-        mActionBar.setTitle(R.string.welcome);
         invalidateOptionsMenu();
     }
 
@@ -150,6 +151,19 @@ public class TriviaActivity extends AppCompatActivity implements
     }
     /* end of callbacks */
 
+    /* callbacks for selecting menu items */
+    private void onSelectTopThreeItem() {
+        addPreviousToBackStack(BestPlayersFragment.newInstance());
+    }
+
+    /* Used in this Activity (menuItem) and in LoginSuccessFragment */
+    public void onLogoutUser()    {
+        mAuth.signOut();
+        toWelcomeFragment();
+        mActionBar.setTitle(R.string.welcome);
+        invalidateOptionsMenu();
+    }
+
     private void toWelcomeFragment() {
         replaceFragment(WelcomeFragment.newInstance());
     }
@@ -159,6 +173,5 @@ public class TriviaActivity extends AppCompatActivity implements
                 mAuth.getCurrentUser().getDisplayName());
         mActionBar.setTitle(usernameTitleString);
     }
-
 }
 

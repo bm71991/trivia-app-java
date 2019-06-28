@@ -1,4 +1,4 @@
-package com.bm.android.trivia.game;
+package com.bm.android.trivia.game.viewmodels;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
@@ -33,8 +33,6 @@ public class SetupViewModel extends AndroidViewModel {
         difficultyChosen = new MutableLiveData<>();
         categoryChosen = new MutableLiveData<>();
     }
-
-
 
     public void setCategory(String category)    {
         categoryChosen.setValue(category);
