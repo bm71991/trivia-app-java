@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
@@ -23,6 +24,7 @@ public class PickerFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         setupViewModel = ViewModelProviders.of(getActivity()).get(SetupViewModel.class);
+        Log.i("test", "view model in dialog = " + setupViewModel);
         pickerType = setupViewModel.getDialogType();
         String title = getTitle(pickerType);
         options = getOptions(pickerType);

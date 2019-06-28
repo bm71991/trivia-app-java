@@ -6,22 +6,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.annotation.NonNull;
 
-/*Primarily used for communication between SetupFragment and PickerFragment*/
+/*Primarily used for communication between SetupFragment and SetupPickerFragment*/
 public class SetupViewModel extends AndroidViewModel {
     private String dialogType;
     private MutableLiveData<String> categoryChosen;
     private MutableLiveData<String> difficultyChosen;
-    private final String[] categoryOptions = new String[] {
-        "Books",
-        "Film",
-        "TV",
-        "Music"
-    };
-    private final String[] difficultyOptions = new String[] {
-        "easy",
-        "medium",
-        "hard"
-    };
 
     public SetupViewModel(@NonNull Application application) {
         super(application);
@@ -31,7 +20,13 @@ public class SetupViewModel extends AndroidViewModel {
     }
 
     public String getCategoryString(int index)    {
-        return categoryOptions[index];
+        String[] categories = getCategoryOptions();
+        return categories[index];
+    }
+
+    public String getDifficultyString(int index)    {
+        String[] difficulties = getDifficultyOptions();
+        return difficulties[index];
     }
 
     public void resetChosenOptions() {
@@ -39,9 +34,7 @@ public class SetupViewModel extends AndroidViewModel {
         categoryChosen = new MutableLiveData<>();
     }
 
-    public String getDifficultyString(int index)    {
-        return difficultyOptions[index];
-    }
+
 
     public void setCategory(String category)    {
         categoryChosen.setValue(category);
@@ -72,10 +65,19 @@ public class SetupViewModel extends AndroidViewModel {
     }
 
     public String[] getCategoryOptions() {
-        return categoryOptions;
+        return new String[] {
+                "Books",
+                "Film",
+                "TV",
+                "Music"
+        };
     }
 
     public String[] getDifficultyOptions() {
-        return difficultyOptions;
+        return new String[] {
+                "easy",
+                "medium",
+                "hard"
+        };
     }
 }
