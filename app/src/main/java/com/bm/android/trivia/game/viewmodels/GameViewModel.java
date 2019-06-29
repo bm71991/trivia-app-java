@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.bm.android.trivia.api_call.TriviaQuestion;
 import com.bm.android.trivia.api_call.TriviaResult;
-import com.bm.android.trivia.game.WebServiceRepository;
+import com.bm.android.trivia.api_call.WebServiceRepository;
 
 import java.util.ArrayList;
 

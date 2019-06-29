@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -19,6 +20,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 public class SignupFragment extends Fragment {
     private FirebaseAuth mAuth;
@@ -28,6 +31,8 @@ public class SignupFragment extends Fragment {
     private EditText mUsernameEditText;
     private Button mSignupButton;
     private SignupFragmentCallback mCallback;
+    private UserAccessViewModel mViewModel;
+    private LinearLayout mSignupLayout;
 
     public interface SignupFragmentCallback {
         void onSignupSuccess();
@@ -58,45 +63,48 @@ public class SignupFragment extends Fragment {
         mPasswordEditText = view.findViewById(R.id.password_input);
         mUsernameEditText = view.findViewById(R.id.username);
         mSignupButton = view.findViewById(R.id.signup_button);
+        mSignupLayout = view.findViewById(R.id.sign_up_layout);
+
+        mViewModel = ViewModelProviders.of(getActivity()).get(UserAccessViewModel.class);
+
+        if (mViewModel.isQuerying())    {
+            showProgressBar();
+        }
 
         mSignupButton.setOnClickListener(v -> {
+            mViewModel.setQueryFlag(true);
             String email = mEmailEditText.getText().toString();
             String password = mPasswordEditText.getText().toString();
             String username = mUsernameEditText.getText().toString();
-
-            mProgressBar.setVisibility(ProgressBar.VISIBLE);
-
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        mProgressBar.setVisibility(ProgressBar.GONE);
-
-                        if (task.isSuccessful())    {
-                            mAuth.getCurrentUser().sendEmailVerification()
-                                    .addOnCompleteListener(task1 -> {
-                                        setUserName(username);
-                                    });
-                        } else {
-                            Toast.makeText(getContext(), task.getException().getMessage(),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+            showProgressBar();
+            mViewModel.signUp(email, password, username);
         });
+
+        observeIsSuccessfulSigningUp();
+        observeHadErrorSigningUp();
 
         return view;
     }
 
-    private void setUserName(String username)  {
-        UserProfileChangeRequest usernameUpdate = new UserProfileChangeRequest.Builder()
-                .setDisplayName(username).build();
-            mAuth.getCurrentUser().updateProfile(usernameUpdate)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+    public void observeIsSuccessfulSigningUp() {
+        mViewModel.getIsSuccessfulSigningUp().observe(this, new Observer<Boolean>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                /*must explicitly sign out or else
-                  mAuth.getCurrentUser() != null
-                */
-                mAuth.signOut();
-                mCallback.onSignupSuccess();
+            public void onChanged(Boolean isSuccessful) {
+                mViewModel.setQueryFlag(false);
+                if (isSuccessful)   {
+                    mCallback.onSignupSuccess();
+                }
+            }
+        });
+    }
+
+    public void observeHadErrorSigningUp()  {
+        mViewModel.getHadErrorSigningUp().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String errorMessage) {
+                mViewModel.setQueryFlag(false);
+                hideProgressBar();
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -104,6 +112,17 @@ public class SignupFragment extends Fragment {
     @Override
     public void onDetach()   {
         super.onDetach();
+        mViewModel.initSignupLiveData();
         mCallback = null;
+    }
+
+    private void showProgressBar()  {
+        mSignupLayout.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar()  {
+        mSignupLayout.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
     }
 }
