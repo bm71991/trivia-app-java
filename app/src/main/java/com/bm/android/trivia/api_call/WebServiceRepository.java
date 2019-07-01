@@ -21,11 +21,11 @@ public class WebServiceRepository {
     /*mapping of category names to numbers which are used in the trivia API call */
     private int mapCategoryNameToInt(String categoryName)   {
         switch (categoryName)   {
-            case "Books":
+            case "books":
                 return 10;
-            case "Film":
+            case "film":
                 return 11;
-            case "Music":
+            case "music":
                 return 12;
             case "TV":
                 return 14;

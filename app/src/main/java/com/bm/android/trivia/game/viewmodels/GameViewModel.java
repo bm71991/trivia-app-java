@@ -1,6 +1,8 @@
 package com.bm.android.trivia.game.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.bm.android.trivia.api_call.TriviaQuestion;
 import com.bm.android.trivia.api_call.TriviaResult;
 import com.bm.android.trivia.api_call.WebServiceRepository;
+import com.bm.android.trivia.game.FirestoreRepository;
 
 import java.util.ArrayList;
 
@@ -26,7 +29,10 @@ public class GameViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> currentQuestionIndex;
     private String difficulty;
     private WebServiceRepository mWebServiceRepository;
+    private FirestoreRepository mFirestoreRepository;
     private boolean hasCalledLoadQuestions;
+    private MutableLiveData<Boolean> incrementPerfectScoreWasSuccessful;
+    private boolean mCallingDbFlag;
 
     public GameViewModel(@NonNull Application application) {
         super(application);
@@ -34,8 +40,43 @@ public class GameViewModel extends AndroidViewModel {
         currentQuestionIndex = new MutableLiveData<>();
         currentQuestionIndex.setValue(0);
         correctAnswerCount = 0;
+
         hasCalledLoadQuestions = false;
+        mCallingDbFlag = false;
+
         mWebServiceRepository = new WebServiceRepository();
+        incrementPerfectScoreWasSuccessful = new MutableLiveData<>();
+        mFirestoreRepository = new FirestoreRepository();
+    }
+
+    public void resetGame() {
+        mQuestions = new MutableLiveData<>();
+        currentQuestionIndex.setValue(0);
+        correctAnswerCount = 0;
+        hasCalledLoadQuestions = false;
+        incrementPerfectScoreWasSuccessful = new MutableLiveData<>();
+    }
+
+    public boolean isCallingDb() {
+        return mCallingDbFlag;
+    }
+
+    public boolean isPerfectScore(int numberOfQuestions) {
+        Log.i("test", "perfect score: correctAnswer count = " + correctAnswerCount + ", numberOfQuestions = " + numberOfQuestions + ", " + correctAnswerCount / numberOfQuestions);
+        return correctAnswerCount / numberOfQuestions == 1;
+    }
+
+    public void incrementPerfectScoreCount(String category, String difficulty)  {
+        mFirestoreRepository.incrementPerfectScoreCount(category, difficulty,
+                incrementPerfectScoreWasSuccessful);
+    }
+
+    public void setDbCallFlag(boolean bool)    {
+        mCallingDbFlag = bool;
+    }
+
+    public LiveData<Boolean> getIncrementScoreCountStatus()  {
+        return incrementPerfectScoreWasSuccessful;
     }
 
     public boolean hasCalledLoadQuestions() {
@@ -46,7 +87,7 @@ public class GameViewModel extends AndroidViewModel {
         hasCalledLoadQuestions = true;
     }
 
-    public void incrementCorrectAnswerCount()   {
+    public void incrementCorrectAnswerCount() {
         correctAnswerCount++;
     }
 
@@ -56,13 +97,6 @@ public class GameViewModel extends AndroidViewModel {
 
     public LiveData<ArrayList<TriviaQuestion>> getQuestionsLiveData() {
         return mQuestions;
-    }
-
-    public void resetGame() {
-        mQuestions = new MutableLiveData<>();
-        currentQuestionIndex.setValue(0);
-        correctAnswerCount = 0;
-        hasCalledLoadQuestions = false;
     }
 
     public LiveData<Integer> getCurrentQuestionIndex()    {
@@ -78,8 +112,15 @@ public class GameViewModel extends AndroidViewModel {
         this.difficulty = difficulty;
     }
 
+    public String getDifficulty() {
+        return difficulty;
+    }
+
     public void setCategory(String categoryName)    {
         category = categoryName;
+    }
+    public String getCategory() {
+        return category;
     }
 
     public void loadQuestions() {
@@ -96,6 +137,7 @@ public class GameViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(TriviaResult triviaResult) {
                         mQuestions.postValue(triviaResult.getQuestions());
+                        Log.i("test", mQuestions + "");
                     }
                     @Override
                     public void onError(Throwable e) {

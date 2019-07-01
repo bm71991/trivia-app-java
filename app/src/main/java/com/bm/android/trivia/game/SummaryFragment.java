@@ -34,6 +34,7 @@ public class SummaryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)   {
         View view = inflater.inflate(R.layout.summary_fragment, container, false);
+
         mRestartButton = view.findViewById(R.id.restart_button);
         mScoreTextView = view.findViewById(R.id.trivia_score);
         displayFinalScore();

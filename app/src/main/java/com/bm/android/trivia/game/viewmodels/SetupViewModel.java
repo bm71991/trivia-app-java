@@ -64,10 +64,10 @@ public class SetupViewModel extends AndroidViewModel {
 
     public String[] getCategoryOptions() {
         return new String[] {
-                "Books",
-                "Film",
+                "books",
+                "film",
                 "TV",
-                "Music"
+                "music"
         };
     }
 

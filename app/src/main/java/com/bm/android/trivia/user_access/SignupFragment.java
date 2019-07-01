@@ -82,29 +82,33 @@ public class SignupFragment extends Fragment {
 
         observeIsSuccessfulSigningUp();
         observeHadErrorSigningUp();
+        observeIfUserWasAddedToDatabase();
 
         return view;
     }
 
     public void observeIsSuccessfulSigningUp() {
-        mViewModel.getIsSuccessfulSigningUp().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isSuccessful) {
-                mViewModel.setQueryFlag(false);
-                if (isSuccessful)   {
-                    mCallback.onSignupSuccess();
-                }
+        mViewModel.getIsSuccessfulSigningUp().observe(this, isSuccessful -> {
+            mViewModel.setQueryFlag(false);
+            if (isSuccessful)   {
+                mCallback.onSignupSuccess();
             }
         });
     }
 
     public void observeHadErrorSigningUp()  {
-        mViewModel.getHadErrorSigningUp().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String errorMessage) {
-                mViewModel.setQueryFlag(false);
-                hideProgressBar();
-                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+        mViewModel.getHadErrorSigningUp().observe(this, errorMessage -> {
+            mViewModel.setQueryFlag(false);
+            hideProgressBar();
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+        });
+    }
+
+    public void observeIfUserWasAddedToDatabase()   {
+        mViewModel.getIsUserAddedToDb().observe(this, wasAdded -> {
+            if (!wasAdded)   {
+                Toast.makeText(getContext(), "Error in adding user to the database",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
