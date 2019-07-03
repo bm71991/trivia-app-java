@@ -82,7 +82,6 @@ public class SignupFragment extends Fragment {
 
         observeIsSuccessfulSigningUp();
         observeHadErrorSigningUp();
-        observeIfUserWasAddedToDatabase();
 
         return view;
     }
@@ -101,15 +100,6 @@ public class SignupFragment extends Fragment {
             mViewModel.setQueryFlag(false);
             hideProgressBar();
             Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
-        });
-    }
-
-    public void observeIfUserWasAddedToDatabase()   {
-        mViewModel.getIsUserAddedToDb().observe(this, wasAdded -> {
-            if (!wasAdded)   {
-                Toast.makeText(getContext(), "Error in adding user to the database",
-                        Toast.LENGTH_LONG).show();
-            }
         });
     }
 

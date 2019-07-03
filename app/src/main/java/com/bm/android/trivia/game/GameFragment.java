@@ -153,9 +153,13 @@ public class GameFragment extends Fragment {
             RadioButton selectedButton = GameFragment.this.getView().
                     findViewById(selectedButtonId);
             String correctAnswer = getCurrentQuestion().getCorrectAnswer();
+            String escapedCorrectAnswer = Html.fromHtml(correctAnswer).toString();
+
             String selectedButtonText = selectedButton.getText().toString();
-            if (selectedButtonText.equals(correctAnswer)) {
+            if (selectedButtonText.equals(escapedCorrectAnswer)) {
                 mGameViewModel.incrementCorrectAnswerCount();
+                Log.i("test", selectedButtonText + ", " + escapedCorrectAnswer);
+                Log.i("test", "CORRECT: correct answer count now = " + mGameViewModel.getCorrectAnswerCount());
             }
             mRadioGroup.removeAllViews();
             mGameViewModel.incrementCurrentQuestionIndex();
@@ -193,10 +197,6 @@ public class GameFragment extends Fragment {
     }
 
     private boolean gameOver()   {
-
-        Log.i("test", "calling gameOver: " + (mCurrentQuestionIndex.getValue() == mQuestionsLiveData.getValue().size() - 1));
-        Log.i("test", "current question index = " +  mCurrentQuestionIndex.getValue() +
-                ", listSize = " + mQuestionsLiveData.getValue().size());
         return mCurrentQuestionIndex.getValue() == mQuestionsLiveData.getValue().size();
     }
 

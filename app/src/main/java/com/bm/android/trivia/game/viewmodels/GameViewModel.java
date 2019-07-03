@@ -21,7 +21,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-/*Used by GameFragment and for communication between SetupFragment and GameFragment */
 public class GameViewModel extends AndroidViewModel {
     private MutableLiveData<ArrayList<TriviaQuestion>> mQuestions;
     private String category;
@@ -62,7 +61,7 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public boolean isPerfectScore(int numberOfQuestions) {
-        Log.i("test", "perfect score: correctAnswer count = " + correctAnswerCount + ", numberOfQuestions = " + numberOfQuestions + ", " + correctAnswerCount / numberOfQuestions);
+        Log.i("test", "correctAnswerCount = " + correctAnswerCount + ", numberOfQuestions = " + numberOfQuestions);
         return correctAnswerCount / numberOfQuestions == 1;
     }
 

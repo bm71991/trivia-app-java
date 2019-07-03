@@ -22,7 +22,7 @@ public class UserAccessViewModel extends AndroidViewModel {
     private MutableLiveData<String> hadErrorSigningIn;
     private MutableLiveData<Boolean> isSuccessfulSigningUp;
     private MutableLiveData<String> hadErrorSigningUp;
-    private MutableLiveData<Boolean> addedUserToDatabase;
+//    private MutableLiveData<Boolean> addedUserToDatabase;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private boolean queryFlag;
@@ -44,7 +44,7 @@ public class UserAccessViewModel extends AndroidViewModel {
     public void initSignupLiveData()   {
         isSuccessfulSigningUp = new MutableLiveData<>();
         hadErrorSigningUp = new MutableLiveData<>();
-        addedUserToDatabase = new MutableLiveData<>();
+//        addedUserToDatabase = new MutableLiveData<>();
     }
 
     public boolean isQuerying() {
@@ -86,7 +86,6 @@ public class UserAccessViewModel extends AndroidViewModel {
                                     setUserName(username);
                                 });
                     } else {
-//                        isSuccessfulSigningUp.setValue(false);
                         hadErrorSigningUp.setValue(task.getException().getMessage());
                     }
                 });
@@ -97,12 +96,9 @@ public class UserAccessViewModel extends AndroidViewModel {
                 .setDisplayName(username).build();
         mAuth.getCurrentUser().updateProfile(usernameUpdate)
                 .addOnCompleteListener(task -> {
-                      mFirestoreRepository.addUserToDb(addedUserToDatabase, isSuccessfulSigningUp);
+                      mFirestoreRepository.addUserToDb(hadErrorSigningUp, isSuccessfulSigningUp);
                 });
     }
-
-
-    public LiveData<Boolean> getIsUserAddedToDb()  { return addedUserToDatabase; }
 
     public LiveData<Boolean> getIsEmailVerified() {
         return isEmailVerified;

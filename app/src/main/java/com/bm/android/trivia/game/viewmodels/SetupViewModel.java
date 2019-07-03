@@ -1,6 +1,9 @@
 package com.bm.android.trivia.game.viewmodels;
 
 import android.app.Application;
+
+import com.bm.android.trivia.game.FirestoreRepository;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -45,6 +48,7 @@ public class SetupViewModel extends AndroidViewModel {
     public LiveData<String> getCategoryChosen() {
         return categoryChosen;
     }
+
 
     public LiveData<String> getDifficultyChosen() {
         return difficultyChosen;

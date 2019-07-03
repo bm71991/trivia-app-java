@@ -1,14 +1,19 @@
 package com.bm.android.trivia;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.bm.android.trivia.game.BestPlayersDialog;
 import com.bm.android.trivia.game.BestPlayersFragment;
+import com.bm.android.trivia.game.BestPlayersPickerFragment;
 import com.bm.android.trivia.game.GameFragment;
 import com.bm.android.trivia.game.SetupFragment;
 import com.bm.android.trivia.game.SummaryFragment;
+import com.bm.android.trivia.game.viewmodels.BestPlayersViewModel;
+import com.bm.android.trivia.game.viewmodels.SetupViewModel;
 import com.bm.android.trivia.user_access.LoginFragment;
 import com.bm.android.trivia.user_access.LoginSuccessFragment;
 import com.bm.android.trivia.user_access.SignupFragment;
@@ -20,6 +25,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 
 public class TriviaActivity extends AppCompatActivity implements
         SetupFragment.SetupFragmentCallback,
@@ -29,7 +36,8 @@ public class TriviaActivity extends AppCompatActivity implements
         SignupFragment.SignupFragmentCallback,
         SignupSuccessFragment.SignupSuccessFragmentCallback,
         LoginFragment.LoginFragmentCallback,
-        LoginSuccessFragment.LoginSuccessFragmentCallback   {
+        LoginSuccessFragment.LoginSuccessFragmentCallback,
+        BestPlayersFragment.BestPlayersFragmentCallback {
 
     private FragmentManager fm;
     private FirebaseAuth mAuth;
@@ -119,6 +127,9 @@ public class TriviaActivity extends AppCompatActivity implements
 
     /*SummaryFragment Callbacks*/
     public void onSetupNewGame()    {
+        SetupViewModel vm = ViewModelProviders.of(this).get(SetupViewModel.class);
+        vm.clearDialogType();
+        vm.resetChosenOptions();
         replaceFragment(SetupFragment.newInstance());
         setPlayerNameInActionbar();
         invalidateOptionsMenu();
@@ -149,10 +160,31 @@ public class TriviaActivity extends AppCompatActivity implements
         mActionBar.setTitle(R.string.actionbar_login_success);
         replaceFragment(LoginSuccessFragment.newInstance());
     }
+
+    /*used in BestPlayersFragment */
+    @Override
+    public void onStartPicker() {
+        String PICKER_DIALOG_TAG = "pickerDialogTag";
+        BestPlayersPickerFragment pickerDialog = BestPlayersPickerFragment.newInstance();
+        pickerDialog.show(fm, PICKER_DIALOG_TAG);
+    }
+
+    @Override
+    public void onStartBestPlayersDialog()  {
+        String BEST_PLAYERS_DIALOG_TAG = "bestPlayersDialogTag";
+        BestPlayersDialog bestPlayersDialog = BestPlayersDialog.newInstance();
+        bestPlayersDialog.show(fm, BEST_PLAYERS_DIALOG_TAG);
+    }
     /* end of callbacks */
 
-    /* callbacks for selecting menu items */
+    /* for selecting menu items */
     private void onSelectTopThreeItem() {
+        //clear previous viewmodel state if it exists
+        BestPlayersViewModel vm = ViewModelProviders.of(this)
+                .get(BestPlayersViewModel.class);
+        vm.clearDialogType();
+        vm.resetChosenOptions();
+
         addPreviousToBackStack(BestPlayersFragment.newInstance());
     }
 

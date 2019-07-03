@@ -1,5 +1,6 @@
 package com.bm.android.trivia.game;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,16 +23,28 @@ public class BestPlayersFragment extends Fragment {
     private Button mCategoryButton;
     private Button mDifficultyButton;
     private Button mSubmitButton;
+    private BestPlayersFragmentCallback mCallback;
 
     public static BestPlayersFragment newInstance() {
         return new BestPlayersFragment();
     }
 
 
+    public interface BestPlayersFragmentCallback    {
+        void onStartPicker();
+        void onStartBestPlayersDialog();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         mViewModel = ViewModelProviders.of(getActivity()).get(BestPlayersViewModel.class);
+    }
+
+    @Override
+    public void onAttach(Context context)  {
+        super.onAttach(context);
+        mCallback = (BestPlayersFragmentCallback) context;
     }
 
     @Override
@@ -47,32 +60,35 @@ public class BestPlayersFragment extends Fragment {
         mCategoryButton.setOnClickListener(v -> startPickerDialog(CATEGORY_TAG));
         mDifficultyButton.setOnClickListener(v -> startPickerDialog(DIFFICULTY_TAG));
 
-        LiveData<String> categoryChosen = mViewModel.getCategoryChosen();
-        LiveData<String> difficultyChosen = mViewModel.getDifficultyChosen();
+        LiveData<String> categoryChosenLiveData = mViewModel.getCategoryChosen();
+        LiveData<String> difficultyChosenLiveData = mViewModel.getDifficultyChosen();
 
         /* observe when SetupPickerFragment changes these fields in SetupViewModel:
          * update UI accordingly. */
-        categoryChosen.observe(this, chosenCategory -> {
+        categoryChosenLiveData.observe(this, chosenCategory -> {
             mCategoryButton.setText(chosenCategory);
         });
 
-        difficultyChosen.observe(this, chosenDifficulty ->
+        difficultyChosenLiveData.observe(this, chosenDifficulty ->
                 mDifficultyButton.setText(chosenDifficulty));
+
+        mSubmitButton.setOnClickListener(v -> {
+            mCallback.onStartBestPlayersDialog();
+        });
 
         return view;
     }
 
     private void startPickerDialog(String dialogType)    {
-        FragmentManager fm = getFragmentManager();
-        BestPlayersPickerFragment pickerDialog = BestPlayersPickerFragment.newInstance();
         mViewModel.setDialogType(dialogType);
-        pickerDialog.show(fm, PICKER_DIALOG_TAG);
+        mCallback.onStartPicker();
     }
 
     @Override
     public void onDetach()  {
         super.onDetach();
-        mViewModel.clearDialogType();
-        mViewModel.resetChosenOptions();
+        //UNCOMMENT
+//        mViewModel.clearDialogType();
+//        mViewModel.resetChosenOptions();
     }
 }

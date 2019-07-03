@@ -33,4 +33,6 @@
     <string name="get_best_text">
         Search for the top 3 users with the highest number of perfect
     scores for a given category and difficulty.</string>
+    <string name="best_players_dialog_title">
+        Category: %1$s,\n Difficulty: %2$s</string>
 </resources>

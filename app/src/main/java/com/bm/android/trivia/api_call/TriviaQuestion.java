@@ -1,5 +1,7 @@
 package com.bm.android.trivia.api_call;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.Random;
@@ -31,6 +33,7 @@ public class TriviaQuestion {
             answersToDisplay.addAll(incorrectAnswers);
             answersToDisplay.add(correctAnswerIndex, correctAnswer);
             allAnswers = answersToDisplay;
+            Log.i("test", "correctAnswer = " + correctAnswer);
         }
         return allAnswers;
     }
