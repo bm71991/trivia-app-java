@@ -61,7 +61,6 @@ public class GameViewModel extends AndroidViewModel {
     }
 
     public boolean isPerfectScore(int numberOfQuestions) {
-        Log.i("test", "correctAnswerCount = " + correctAnswerCount + ", numberOfQuestions = " + numberOfQuestions);
         return correctAnswerCount / numberOfQuestions == 1;
     }
 

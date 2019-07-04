@@ -4,13 +4,17 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +27,6 @@ public class FirestoreRepository    {
     private final String TAG = "FirestoreRepository";
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private MutableLiveData<Integer> userDocumentCreationCount;
     private final ArrayList<String> perfectScoresCollections = new ArrayList<>(
             Arrays.asList(
             "booksPerfectScores",
@@ -35,43 +38,32 @@ public class FirestoreRepository    {
     public FirestoreRepository()    {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        userDocumentCreationCount = new MutableLiveData<>();
     }
 
     /* used in UserAccessViewModel */
-    public void addUserToDb(MutableLiveData<String> hadErrorSigningUp,
-                            MutableLiveData<Boolean> isSuccessfulSigningUp)   {
+    public Task<Void> addUserToDb() {
         String userEmail = mAuth.getCurrentUser().getEmail();
-        userDocumentCreationCount.setValue(0);
+        WriteBatch addUserBatch = db.batch();
 
-        for (String collectionName : perfectScoresCollections)  {
+        for (String collectionName : perfectScoresCollections) {
             DocumentReference newDocument = db.collection(collectionName)
                     .document(userEmail);
-
-            newDocument.set(new initialPerfectScoreData()).addOnCompleteListener(task -> {
-                if (task.isSuccessful())    {
-                    incrementDocumentCreationCount();
-                    if (allDocumentsAreCreated())   {
-                        isSuccessfulSigningUp.setValue(true);
-                        userDocumentCreationCount = new MutableLiveData<>();
-                        mAuth.signOut();
-                    }
-                } else {
-                    userDocumentCreationCount = new MutableLiveData<>();
-                    mAuth.signOut();
-                    hadErrorSigningUp.setValue("could not add user to the database");
-                }
-            });
+            addUserBatch.set(newDocument, new initialPerfectScoreData());
         }
+
+        return addUserBatch.commit();
     }
 
-    private void incrementDocumentCreationCount()  {
-        Integer previousCreationCount = userDocumentCreationCount.getValue();
-        userDocumentCreationCount.setValue(previousCreationCount + 1);
-    }
+    public Task<Void> removeUserFromDb()   {
+        String userEmail = mAuth.getCurrentUser().getEmail();
+        WriteBatch deleteUserBatch = db.batch();
 
-    private boolean allDocumentsAreCreated() {
-        return userDocumentCreationCount.getValue() == perfectScoresCollections.size();
+        for (String collectionName : perfectScoresCollections)  {
+            DocumentReference docToDelete = db.collection(collectionName)
+                    .document(userEmail);
+            deleteUserBatch.delete(docToDelete);
+        }
+        return deleteUserBatch.commit();
     }
 
     /* used in GameViewModel */

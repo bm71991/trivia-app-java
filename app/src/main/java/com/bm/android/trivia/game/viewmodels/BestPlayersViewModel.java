@@ -79,8 +79,6 @@ public class BestPlayersViewModel extends SetupViewModel {
     public void getTopPlayers() {
         hasCalledDb = true;
         isLoadingResults = true;
-        Log.i("test", "category chosen: " + getCategoryStringChosen() + ", " +
-                "difficulty chosen: " + getDifficultyStringChosen());
         mFirestoreRepository.getBestPlayers(getCategoryStringChosen(),
                 getDifficultyStringChosen(),
                 bestPlayersData);

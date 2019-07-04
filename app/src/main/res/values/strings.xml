@@ -35,4 +35,9 @@
     scores for a given category and difficulty.</string>
     <string name="best_players_dialog_title">
         Category: %1$s,\n Difficulty: %2$s</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_text">
+        Please re-enter your email and password to delete your account.
+    </string>
+    <string name="deleted_account_text">Your account has been successfully deleted.</string>
 </resources>

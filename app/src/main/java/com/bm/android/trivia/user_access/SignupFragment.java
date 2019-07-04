@@ -106,7 +106,6 @@ public class SignupFragment extends Fragment {
     @Override
     public void onDetach()   {
         super.onDetach();
-        mViewModel.initSignupLiveData();
         mCallback = null;
     }
 

@@ -123,7 +123,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onDetach()   {
         super.onDetach();
-        mViewModel.initLoginLiveData();
         mCallback = null;
     }
 }

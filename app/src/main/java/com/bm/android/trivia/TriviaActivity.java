@@ -13,11 +13,16 @@ import com.bm.android.trivia.game.GameFragment;
 import com.bm.android.trivia.game.SetupFragment;
 import com.bm.android.trivia.game.SummaryFragment;
 import com.bm.android.trivia.game.viewmodels.BestPlayersViewModel;
+import com.bm.android.trivia.game.viewmodels.GameViewModel;
 import com.bm.android.trivia.game.viewmodels.SetupViewModel;
+import com.bm.android.trivia.game.viewmodels.SummaryViewModel;
+import com.bm.android.trivia.user_access.DeleteAccountFragment;
+import com.bm.android.trivia.user_access.DeletedAccountFragment;
 import com.bm.android.trivia.user_access.LoginFragment;
 import com.bm.android.trivia.user_access.LoginSuccessFragment;
 import com.bm.android.trivia.user_access.SignupFragment;
 import com.bm.android.trivia.user_access.SignupSuccessFragment;
+import com.bm.android.trivia.user_access.UserAccessViewModel;
 import com.bm.android.trivia.user_access.WelcomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -37,11 +42,54 @@ public class TriviaActivity extends AppCompatActivity implements
         SignupSuccessFragment.SignupSuccessFragmentCallback,
         LoginFragment.LoginFragmentCallback,
         LoginSuccessFragment.LoginSuccessFragmentCallback,
-        BestPlayersFragment.BestPlayersFragmentCallback {
+        BestPlayersFragment.BestPlayersFragmentCallback,
+        DeletedAccountFragment.DeletedAccountCallback,
+        DeleteAccountFragment.DeleteAccountCallback {
 
     private FragmentManager fm;
     private FirebaseAuth mAuth;
     private ActionBar mActionBar;
+    private SetupViewModel setupVm;
+    private BestPlayersViewModel bestPlayersVm;
+    private UserAccessViewModel userAccessVm;
+    private GameViewModel gameVm;
+    private SummaryViewModel summaryVm;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_container);
+
+        mAuth = FirebaseAuth.getInstance();
+        fm = getSupportFragmentManager();
+        mActionBar = getSupportActionBar();
+
+        setupVm = ViewModelProviders.of(this).get(SetupViewModel.class);
+        bestPlayersVm = ViewModelProviders.of(this)
+                .get(BestPlayersViewModel.class);
+        userAccessVm =  ViewModelProviders.of(this)
+                .get(UserAccessViewModel.class);
+        gameVm = ViewModelProviders.of(this)
+                .get(GameViewModel.class);
+        summaryVm = ViewModelProviders.of(this)
+                .get(SummaryViewModel.class);
+
+        // UI of Fragment already inflated in Fragment
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+
+        /* returns null if this is the first time onCreate is being called */
+        if (fragment == null)   {
+            if (mAuth.getCurrentUser() == null) {
+                /* if user is not logged in, go to Welcome Page */
+                addFirstFragment(WelcomeFragment.newInstance());
+                mActionBar.setTitle(R.string.welcome);
+            } else {
+                /* if user is logged in, go to game setup page */
+                addFirstFragment(SetupFragment.newInstance());
+                setPlayerNameInActionbar();
+            }
+        }
+    }
 
     protected void addFirstFragment(Fragment fragment)   {
         fm.beginTransaction()
@@ -63,32 +111,6 @@ public class TriviaActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_container);
-
-        mAuth = FirebaseAuth.getInstance();
-        fm = getSupportFragmentManager();
-        mActionBar = getSupportActionBar();
-
-        // UI of Fragment already inflated in Fragment
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        /* returns null if this is the first time onCreate is being called */
-        if (fragment == null)   {
-            if (mAuth.getCurrentUser() == null) {
-                /* if user is not logged in, go to Welcome Page */
-                addFirstFragment(WelcomeFragment.newInstance());
-                mActionBar.setTitle(R.string.welcome);
-            } else {
-                /* if user is logged in, go to game setup page */
-                addFirstFragment(SetupFragment.newInstance());
-                setPlayerNameInActionbar();
-            }
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu)    {
         MenuInflater inflater = getMenuInflater();
 
@@ -107,6 +129,9 @@ public class TriviaActivity extends AppCompatActivity implements
             case (R.id.menu_top_players):
                 onSelectTopThreeItem();
             break;
+            case (R.id.menu_delete_account):
+                onSelectDeleteAccount();
+            break;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -117,6 +142,7 @@ public class TriviaActivity extends AppCompatActivity implements
     /* Game callbacks */
     /*SetupFragment Callbacks*/
     public void onStartGame()  {
+        gameVm.resetGame();
         replaceFragment(GameFragment.newInstance());
     }
 
@@ -125,11 +151,12 @@ public class TriviaActivity extends AppCompatActivity implements
         replaceFragment(SummaryFragment.newInstance());
     }
 
-    /*SummaryFragment Callbacks*/
+    /*SummaryFragment/LoginSuccessFragment Callback*/
     public void onSetupNewGame()    {
-        SetupViewModel vm = ViewModelProviders.of(this).get(SetupViewModel.class);
-        vm.clearDialogType();
-        vm.resetChosenOptions();
+        setupVm.clearDialogType();
+        setupVm.resetChosenOptions();
+        summaryVm.resetFinalScore();
+
         replaceFragment(SetupFragment.newInstance());
         setPlayerNameInActionbar();
         invalidateOptionsMenu();
@@ -145,6 +172,7 @@ public class TriviaActivity extends AppCompatActivity implements
     /* used in WelcomeFragment */
     @Override
     public void onSelectSignup() {
+        userAccessVm.initSignupLiveData();
         replaceFragment(SignupFragment.newInstance());
     }
 
@@ -158,6 +186,7 @@ public class TriviaActivity extends AppCompatActivity implements
     @Override
     public void onLoginSuccess()    {
         mActionBar.setTitle(R.string.actionbar_login_success);
+        userAccessVm.initLoginLiveData();
         replaceFragment(LoginSuccessFragment.newInstance());
     }
 
@@ -175,16 +204,19 @@ public class TriviaActivity extends AppCompatActivity implements
         BestPlayersDialog bestPlayersDialog = BestPlayersDialog.newInstance();
         bestPlayersDialog.show(fm, BEST_PLAYERS_DIALOG_TAG);
     }
+
+    /*used in DeleteAccountFragment*/
+    @Override
+    public void onDeleteAccount()   {
+        replaceFragment(DeletedAccountFragment.newInstance());
+    }
     /* end of callbacks */
 
     /* for selecting menu items */
     private void onSelectTopThreeItem() {
         //clear previous viewmodel state if it exists
-        BestPlayersViewModel vm = ViewModelProviders.of(this)
-                .get(BestPlayersViewModel.class);
-        vm.clearDialogType();
-        vm.resetChosenOptions();
-
+        bestPlayersVm.clearDialogType();
+        bestPlayersVm.resetChosenOptions();
         addPreviousToBackStack(BestPlayersFragment.newInstance());
     }
 
@@ -196,7 +228,7 @@ public class TriviaActivity extends AppCompatActivity implements
         invalidateOptionsMenu();
     }
 
-    private void toWelcomeFragment() {
+    public void toWelcomeFragment() {
         replaceFragment(WelcomeFragment.newInstance());
     }
 
@@ -204,6 +236,11 @@ public class TriviaActivity extends AppCompatActivity implements
         String usernameTitleString = getString(R.string.game_actionbar_title,
                 mAuth.getCurrentUser().getDisplayName());
         mActionBar.setTitle(usernameTitleString);
+    }
+
+    private void onSelectDeleteAccount()    {
+        userAccessVm.initDeleteAccountLiveData();
+        addPreviousToBackStack(DeleteAccountFragment.newInstance());
     }
 }
 

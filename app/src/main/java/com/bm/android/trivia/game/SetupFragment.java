@@ -90,9 +90,6 @@ public class SetupFragment extends Fragment {
     public void onDetach()   {
         super.onDetach();
         mCallback = null;
-        //UNCOMMENT
-//        mSetupViewModel.clearDialogType();
-//        mSetupViewModel.resetChosenOptions();
     }
 
     private void startPickerDialog(String dialogType)    {

@@ -158,8 +158,6 @@ public class GameFragment extends Fragment {
             String selectedButtonText = selectedButton.getText().toString();
             if (selectedButtonText.equals(escapedCorrectAnswer)) {
                 mGameViewModel.incrementCorrectAnswerCount();
-                Log.i("test", selectedButtonText + ", " + escapedCorrectAnswer);
-                Log.i("test", "CORRECT: correct answer count now = " + mGameViewModel.getCorrectAnswerCount());
             }
             mRadioGroup.removeAllViews();
             mGameViewModel.incrementCurrentQuestionIndex();

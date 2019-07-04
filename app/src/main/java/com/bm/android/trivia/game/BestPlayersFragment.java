@@ -87,8 +87,5 @@ public class BestPlayersFragment extends Fragment {
     @Override
     public void onDetach()  {
         super.onDetach();
-        //UNCOMMENT
-//        mViewModel.clearDialogType();
-//        mViewModel.resetChosenOptions();
     }
 }

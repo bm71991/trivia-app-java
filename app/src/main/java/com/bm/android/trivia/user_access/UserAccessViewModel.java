@@ -1,13 +1,19 @@
 package com.bm.android.trivia.user_access;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bm.android.trivia.game.FirestoreRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import androidx.annotation.NonNull;
@@ -22,29 +28,38 @@ public class UserAccessViewModel extends AndroidViewModel {
     private MutableLiveData<String> hadErrorSigningIn;
     private MutableLiveData<Boolean> isSuccessfulSigningUp;
     private MutableLiveData<String> hadErrorSigningUp;
-//    private MutableLiveData<Boolean> addedUserToDatabase;
+    private MutableLiveData<Boolean> successfulDeletingAccount;
+    private MutableLiveData<String> errorDeletingAccount;
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private boolean queryFlag;
+    private boolean deletingAccountFlag;
     private FirestoreRepository mFirestoreRepository;
 
     public UserAccessViewModel(@NonNull Application application) {
         super(application);
         initLoginLiveData();
         initSignupLiveData();
-        queryFlag = false;
+        initDeleteAccountLiveData();
         mFirestoreRepository = new FirestoreRepository();
     }
 
     public void initLoginLiveData() {
+        queryFlag = false;
         isEmailVerified = new MutableLiveData<>();
         hadErrorSigningIn = new MutableLiveData<>();
     }
 
     public void initSignupLiveData()   {
+        queryFlag = false;
         isSuccessfulSigningUp = new MutableLiveData<>();
         hadErrorSigningUp = new MutableLiveData<>();
-//        addedUserToDatabase = new MutableLiveData<>();
+    }
+
+    public void initDeleteAccountLiveData() {
+        deletingAccountFlag = false;
+        successfulDeletingAccount = new MutableLiveData<>();
+        errorDeletingAccount = new MutableLiveData<>();
     }
 
     public boolean isQuerying() {
@@ -96,7 +111,66 @@ public class UserAccessViewModel extends AndroidViewModel {
                 .setDisplayName(username).build();
         mAuth.getCurrentUser().updateProfile(usernameUpdate)
                 .addOnCompleteListener(task -> {
-                      mFirestoreRepository.addUserToDb(hadErrorSigningUp, isSuccessfulSigningUp);
+                    if (task.isSuccessful()){
+                        //add documents to firestore
+                        addDbRecords();
+                    } else {
+                        hadErrorSigningUp.setValue(task.getException().getMessage());
+                    }
+                });
+    }
+
+    private void addDbRecords() {
+        mFirestoreRepository.addUserToDb()
+                .addOnSuccessListener(aVoid -> {
+                    mAuth.signOut();
+                    isSuccessfulSigningUp.setValue(true);
+                })
+                .addOnFailureListener(e -> {
+                    mAuth.signOut();
+                    hadErrorSigningUp.setValue("could not add user to the database");
+                });
+    }
+
+    public void deleteAccount(String email, String password)    {
+        AuthCredential credential = EmailAuthProvider
+                .getCredential(email, password);
+        FirebaseUser mCurrentUser = mAuth.getCurrentUser();
+
+        // Prompt the user to re-provide their sign-in credentials
+        mCurrentUser.reauthenticate(credential)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())    {
+                    //delete user auth data from firebase
+                    deleteDbRecords();
+
+                } else {
+                    task.getException().toString();
+                    errorDeletingAccount.setValue(task.getException().getMessage());
+                }
+            }
+        });
+    }
+
+    private void deleteDbRecords()  {
+        //delete user-related documents from firestore db
+        mFirestoreRepository.removeUserFromDb()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        //delete user from firebase db
+                        mAuth.getCurrentUser().delete();
+                        mAuth.signOut();
+                        successfulDeletingAccount.setValue(true);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        errorDeletingAccount.setValue(e.getMessage());
+                    }
                 });
     }
 
@@ -114,5 +188,21 @@ public class UserAccessViewModel extends AndroidViewModel {
 
     public LiveData<String> getHadErrorSigningUp()   {
         return hadErrorSigningUp;
+    }
+
+    public LiveData<Boolean> getSuccessfulDeletingAccount() {
+        return successfulDeletingAccount;
+    }
+
+    public LiveData<String> getErrorDeletingAccount() {
+        return errorDeletingAccount;
+    }
+
+    public boolean isDeletingAccount()  {
+        return deletingAccountFlag;
+    }
+
+    public void setDeletingAccountFlag(boolean bool)    {
+        deletingAccountFlag = bool;
     }
 }
