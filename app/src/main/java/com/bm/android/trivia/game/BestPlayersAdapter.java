@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bm.android.trivia.R;
+import com.bm.android.trivia.game.viewmodels.BestPlayersViewModel;
 
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class BestPlayersAdapter extends
     public void onBindViewHolder(PlayerViewHolder holder, int position) {
         BestPlayer playerToDisplay = mDataset.get(position);
         String playerEmail = playerToDisplay.email;
-        int playerWinCount = getPlayerWinCount(playerToDisplay);
+        int playerWinCount = BestPlayersViewModel.getPlayerWinCount(playerToDisplay, mDifficulty);
         int itemNumber = position + 1;
         String textToDisplay =
                 itemNumber + ". " + playerEmail + ": " + playerWinCount + " perfect scores";
@@ -60,21 +61,7 @@ public class BestPlayersAdapter extends
         return mDataset.size();
     }
 
-    private int getPlayerWinCount(BestPlayer playerToDisplay)   {
-        int winCount = -1;
-        switch (mDifficulty)    {
-            case ("easy"):
-                winCount = playerToDisplay.easyCount;
-                break;
-            case ("medium"):
-                winCount = playerToDisplay.mediumCount;
-                break;
-            case ("hard"):
-                winCount = playerToDisplay.hardCount;
-                break;
-        }
-        return winCount;
-    }
+
 
 
 }

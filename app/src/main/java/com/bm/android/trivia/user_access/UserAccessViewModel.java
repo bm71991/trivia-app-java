@@ -72,22 +72,19 @@ public class UserAccessViewModel extends AndroidViewModel {
 
     public void signIn(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful())    {
-                            /* if username/password is correct && they are email verified:*/
-                            if (mAuth.getCurrentUser().isEmailVerified())   {
-                                isEmailVerified.setValue(true);
-                            }   else {
-                                /*if username/password is correct && not email verified:*/
-                                mAuth.signOut();
-                                isEmailVerified.setValue(false);
-                            }
-                            /* every other error */
-                        } else  {
-                            hadErrorSigningIn.setValue(task.getException().getMessage());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful())    {
+                        /* if username/password is correct && they are email verified:*/
+                        if (mAuth.getCurrentUser().isEmailVerified())   {
+                            isEmailVerified.setValue(true);
+                        }   else {
+                            /*if username/password is correct && not email verified:*/
+                            mAuth.signOut();
+                            isEmailVerified.setValue(false);
                         }
+                        /* every other error */
+                    } else  {
+                        hadErrorSigningIn.setValue(task.getException().getMessage());
                     }
                 });
     }
@@ -139,17 +136,14 @@ public class UserAccessViewModel extends AndroidViewModel {
 
         // Prompt the user to re-provide their sign-in credentials
         mCurrentUser.reauthenticate(credential)
-        .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful())    {
-                    //delete user auth data from firebase
-                    deleteDbRecords();
+        .addOnCompleteListener(task -> {
+            if (task.isSuccessful())    {
+                //delete user auth data from firebase
+                deleteDbRecords();
 
-                } else {
-                    task.getException().toString();
-                    errorDeletingAccount.setValue(task.getException().getMessage());
-                }
+            } else {
+                task.getException().toString();
+                errorDeletingAccount.setValue(task.getException().getMessage());
             }
         });
     }
@@ -157,21 +151,13 @@ public class UserAccessViewModel extends AndroidViewModel {
     private void deleteDbRecords()  {
         //delete user-related documents from firestore db
         mFirestoreRepository.removeUserFromDb()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        //delete user from firebase db
-                        mAuth.getCurrentUser().delete();
-                        mAuth.signOut();
-                        successfulDeletingAccount.setValue(true);
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    //delete user from firebase db
+                    mAuth.getCurrentUser().delete();
+                    mAuth.signOut();
+                    successfulDeletingAccount.setValue(true);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        errorDeletingAccount.setValue(e.getMessage());
-                    }
-                });
+                .addOnFailureListener(e -> errorDeletingAccount.setValue(e.getMessage()));
     }
 
     public LiveData<Boolean> getIsEmailVerified() {

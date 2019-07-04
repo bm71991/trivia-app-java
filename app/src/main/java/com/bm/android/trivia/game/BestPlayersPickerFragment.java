@@ -25,8 +25,8 @@ public class BestPlayersPickerFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mBestPlayersViewModel = ViewModelProviders.of(getActivity()).get(BestPlayersViewModel.class);
-        Log.i("test", "view model in dialog = " + mBestPlayersViewModel);
+        mBestPlayersViewModel = ViewModelProviders.of(getActivity())
+                .get(BestPlayersViewModel.class);
         pickerType = mBestPlayersViewModel.getDialogType();
         String title = getTitle(pickerType);
         options = getOptions(pickerType);
@@ -45,7 +45,8 @@ public class BestPlayersPickerFragment extends DialogFragment {
                         String optionChosen = mBestPlayersViewModel.getCategoryString(optionsIndex);
                         mBestPlayersViewModel.setCategory(optionChosen);
                     } else {
-                        String optionChosen = mBestPlayersViewModel.getDifficultyString(optionsIndex);
+                        String optionChosen = mBestPlayersViewModel
+                                .getDifficultyString(optionsIndex);
                         mBestPlayersViewModel.setDifficulty(optionChosen);
                     }
                 })

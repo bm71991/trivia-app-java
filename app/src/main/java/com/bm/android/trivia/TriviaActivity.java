@@ -201,6 +201,7 @@ public class TriviaActivity extends AppCompatActivity implements
     @Override
     public void onStartBestPlayersDialog()  {
         String BEST_PLAYERS_DIALOG_TAG = "bestPlayersDialogTag";
+        bestPlayersVm.initBestPlayersViewModel();
         BestPlayersDialog bestPlayersDialog = BestPlayersDialog.newInstance();
         bestPlayersDialog.show(fm, BEST_PLAYERS_DIALOG_TAG);
     }

@@ -25,7 +25,7 @@ public class BestPlayersDialog extends DialogFragment {
     private BestPlayersViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
-    private LiveData<List<BestPlayer>> mBestPlayers;
+    private LiveData<List<BestPlayer>> mBestPlayersLiveData;
     private LinearLayoutManager mLinearLayoutManager;
     private String mTitle;
     private BestPlayersAdapter mAdapter;
@@ -37,7 +37,7 @@ public class BestPlayersDialog extends DialogFragment {
         mViewModel = ViewModelProviders.of(getActivity()).get(BestPlayersViewModel.class);
         mCategoryChosen = mViewModel.getCategoryStringChosen();
         mDifficultyChosen = mViewModel.getDifficultyStringChosen();
-        mBestPlayers = mViewModel.getBestPlayers();
+        mBestPlayersLiveData = mViewModel.getBestPlayersLiveData();
         mTitle = getString(R.string.best_players_dialog_title,
                 mCategoryChosen, mDifficultyChosen);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
@@ -51,17 +51,20 @@ public class BestPlayersDialog extends DialogFragment {
         if (!mViewModel.hasCalledDb())  {
             mViewModel.getTopPlayers();
         }
+
         if (mViewModel.isLoadingResults())  {
             showProgressBar();
-            mBestPlayers.observe(this, bestPlayers -> {
-                configRecyclerView(bestPlayers);
-                hideProgressBar();
-                mViewModel.setIsLoadingResults(false);
-            });
         } else {
-            configRecyclerView(mViewModel.getBestPlayers().getValue());
+            configRecyclerView(mViewModel.getBestPlayers());
             hideProgressBar();
         }
+
+        mBestPlayersLiveData.observe(this, bestPlayerData -> {
+            mViewModel.storeBestPlayers(bestPlayerData);
+            configRecyclerView(mViewModel.getBestPlayers());
+            hideProgressBar();
+            mViewModel.setIsLoadingResults(false);
+        });
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
