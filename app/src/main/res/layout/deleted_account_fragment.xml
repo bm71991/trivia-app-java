@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/deleted_account_text"
-        android:textSize="30dp"
+        android:textSize="25sp"
         android:gravity="center"/>
     <Button
         android:id="@+id/back_to_main_button"

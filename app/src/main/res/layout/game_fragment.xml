@@ -7,33 +7,38 @@
         android:id="@+id/game_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical">
         <TextView
             android:id="@+id/questionText"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-
-            android:text="" />
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textSize="25sp" />
         <ProgressBar
             android:id="@+id/progressBar"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-           />
+            android:layout_gravity="center_horizontal"/>
         <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/questions_radio_group"
-            android:paddingBottom="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="25dp"
             android:visibility="gone" />
         <Button
             android:id="@+id/submit_answer_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/submit_answer"
-
+            android:layout_gravity="center_horizontal"
             android:visibility="gone"/>
     </LinearLayout>
     <ProgressBar

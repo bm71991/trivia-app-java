@@ -40,4 +40,5 @@
         Please re-enter your email and password to delete your account.
     </string>
     <string name="deleted_account_text">Your account has been successfully deleted.</string>
+    <string name="game_setup">Game Setup</string>
 </resources>

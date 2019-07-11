@@ -2,12 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:gravity="center"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/signup_success_text"
-        android:textSize="30dp"/>
+        android:textSize="25sp"
+        android:gravity="center"/>
     <Button
         android:id="@+id/back_to_login_button"
         android:layout_width="wrap_content"
