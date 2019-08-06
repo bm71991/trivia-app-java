@@ -1,3 +1,5 @@
+# trivia-app-java
+
 An Android application written in Java which allows registered users to play a trivia game. The difficulty and subject matter of the quiz can be configured by the player. The quiz is organized into three packages: user_access, game and api_call. 
 
 **user_access** - uses the Firebase authentication API to provide account creation, login, and deletion. These methods are organized into a repository class which are only called at the ViewModel level (UserAccessViewModel). This ensures that network calls in progress during an orientation change will not be interrupted. UserAccessViewModel handles the success or failure of the tasks these methods return by propagating the result to the Fragment level via MutableLiveData/LiveData. After the account has been created on the Firebase authentication level, a document is added to each of the collections in Firestore pertaining to perfect scores: tv, books, film and music. In keep with NoSQL best practices, I tried to keep the database structure as denormalized/flat as possible. 
